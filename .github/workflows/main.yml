@@ -54,12 +54,6 @@ jobs:
             git clone https://github.com/ashitha99/strapi-test.git
             cd strapi-test
 
-            # Install Strapi globally
-            sudo npm install strapi@beta -g
-
-            # Install project dependencies
-            npm install || { echo 'Dependency installation failed'; exit 1; }
-
             # Start the Strapi application with PM2
             pm2 start npm --name "strapi" -- start  # Use 'start' instead of 'develop' for production
 
