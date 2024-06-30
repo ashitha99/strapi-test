@@ -33,27 +33,29 @@ jobs:
         script: |
           set -e
 
-          # Configure dpkg if it was interrupted
+          echo "Configuring dpkg if interrupted..."
           sudo dpkg --configure -a
 
-          # Update the package list and upgrade packages
+          echo "Updating package list and upgrading packages..."
           sudo apt update
           sudo apt upgrade -y
 
-          # Install Node.js and npm if not installed
+          echo "Installing Node.js and npm if not already installed..."
           sudo apt install -y nodejs npm
 
-          # Check if the 'new-strapi' directory exists and is not empty, and remove it if necessary
-          if [ -d "new-strapi" ]; then
-            rm -rf new-strapi
+          echo "Checking if 'strapi-test' directory exists and removing it if necessary..."
+          if [ -d "strapi-test" ]; then
+            rm -rf strapi-test
           fi
 
-          # Clone the Strapi repository
+          echo "Cloning the Strapi repository..."
           git clone https://github.com/ashitha99/strapi-test.git
           cd strapi-test
 
-          # Install Strapi globally
-           npm install 
+          echo "Installing project dependencies..."
+          npm install
 
-          # Start the Strapi application 
-           pm2 start npm --name "strapi" -- start
+          echo "Starting the Strapi application using pm2..."
+          pm2 start npm --name "strapi" -- start
+
+          echo "Deployment complete."
