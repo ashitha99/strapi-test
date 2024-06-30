@@ -53,7 +53,7 @@ jobs:
           cd strapi-test
 
           # Install Strapi globally
-          sudo npm install strapi@beta -g
+           npm install 
 
           # Start the Strapi application 
            pm2 start npm --name "strapi" -- start
