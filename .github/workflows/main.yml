@@ -49,11 +49,11 @@ jobs:
           fi
 
           # Clone the Strapi repository
-          git clone https://github.com/ashitha99/new-strapi.git
-          cd new-strapi
+          git clone https://github.com/ashitha99/strapi-test.git
+          cd strapi-test
 
           # Install Strapi globally
           sudo npm install strapi@beta -g
 
           # Start the Strapi application 
-          pm2 start npm --name "strapi" -- run develop
+           pm2 start npm --name "strapi" -- start
