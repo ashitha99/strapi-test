@@ -10,60 +10,55 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v2
+      - name: Check out repository
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '14'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'  # Adjust Node.js version as per your requirements
 
-    - name: Upgrade npm
-      run: |
-        npm install -g npm@latest
-        npm --version
+      - name: Fix dpkg interrupted error
+        run: sudo dpkg --configure -a
 
-    - name: Clear npm cache
-      run: npm cache clean --force
-
-    - name: Deploy to EC2
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          set -e
-
-          echo "Configuring dpkg if interrupted..."
-          sudo dpkg --configure -a
-
-          echo "Updating package list and upgrading packages..."
+      - name: Update and upgrade system packages
+        run: |
           sudo apt update
           sudo apt upgrade -y
 
-          echo "Installing Node.js and npm if not already installed..."
+      - name: Install Node.js and npm
+        run: |
           sudo apt install -y nodejs npm
 
-          echo "Checking Node.js version..."
-          node --version
+      - name: Upgrade npm
+        run: sudo npm install -g npm@8  # Install npm version 8 which supports Node.js 14
 
-          echo "Checking npm version..."
-          npm --version
+      - name: Clear npm cache
+        run: npm cache clean --force
 
-          echo "Checking if 'strapi-test' directory exists and removing it if necessary..."
-          if [ -d "strapi-test" ]; then
-            rm -rf strapi-test
-          fi
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
 
-          echo "Cloning the Strapi repository..."
-          git clone https://github.com/ashitha99/strapi-test.git
-          cd strapi-test
+            # Check if the 'new-strapi' directory exists and is not empty, and remove it if necessary
+            if [ -d "new-strapi" ]; then
+              rm -rf new-strapi
+            fi
 
-          echo "Installing project dependencies..."
-          npm install
+            # Clone the Strapi repository
+            git clone https://github.com/ashitha99/strapi-test.git
+            cd strapi-test
 
-          echo "Starting the Strapi application using pm2..."
-          pm2 start npm --name "strapi" -- start
+            # Install Strapi globally
+            sudo npm install strapi@beta -g
 
-          echo "Deployment complete."
+            # Start the Strapi application with PM2
+            pm2 start npm --name "strapi" -- start  # Use 'start' instead of 'develop' for production
+
+            # Optionally, you can restart instead of start if it's already running
+            # pm2 restart strapi || pm2 start npm --name "strapi" -- start
