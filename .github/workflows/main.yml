@@ -52,8 +52,8 @@ jobs:
           git clone https://github.com/ashitha99/strapi-test.git
           cd strapi-test
 
-          echo "Installing project dependencies..."
-          npm install
+          echo "Installing project dependencies with npm workspaces..."
+          npm install --workspaces
 
           echo "Starting the Strapi application using pm2..."
           pm2 start npm --name "strapi" -- start
