@@ -33,6 +33,9 @@ jobs:
         script: |
           set -e
 
+          # Configure dpkg if it was interrupted
+          sudo dpkg --configure -a
+
           # Update the package list and upgrade packages
           sudo apt update
           sudo apt upgrade -y
@@ -53,4 +56,4 @@ jobs:
           sudo npm install strapi@beta -g
 
           # Start the Strapi application 
-           pm2 start npm --name "strapi" -- run develop
+          pm2 start npm --name "strapi" -- run develop
