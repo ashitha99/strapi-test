@@ -45,9 +45,9 @@ jobs:
           script: |
             set -e
 
-            # Check if the 'new-strapi' directory exists and is not empty, and remove it if necessary
-            if [ -d "new-strapi" ]; then
-              rm -rf new-strapi
+            # Check if the 'strapi-test' directory exists and is not empty, and remove it if necessary
+            if [ -d "strapi-test" ]; then
+              rm -rf strapi-test
             fi
 
             # Clone the Strapi repository
